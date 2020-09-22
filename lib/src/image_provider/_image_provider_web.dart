@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/src/cache_manager/s3_cache_manager.dart';
 import 'package:cached_network_image/src/image_provider/multi_image_stream_completer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
@@ -30,7 +31,7 @@ class CachedNetworkImageProvider
         assert(scale != null);
 
   @override
-  final BaseCacheManager cacheManager;
+  final S3CacheManager cacheManager;
 
   @override
   final String url;
@@ -104,7 +105,7 @@ class CachedNetworkImageProvider
   ) async* {
     assert(key == this);
     try {
-      var mngr = cacheManager ?? DefaultCacheManager();
+      var mngr = cacheManager ?? S3CacheManager();
       await for (var result in mngr.getFileStream(key.url,
           withProgress: true, headers: headers)) {
         if (result is DownloadProgress) {

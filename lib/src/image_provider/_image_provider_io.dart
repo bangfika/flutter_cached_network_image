@@ -27,7 +27,7 @@ class CachedNetworkImageProvider
         assert(scale != null);
 
   @override
-  final BaseCacheManager cacheManager;
+  final S3CacheManager cacheManager;
 
   /// Web url of the image to load
   @override
@@ -76,8 +76,8 @@ class CachedNetworkImageProvider
   ) async* {
     assert(key == this);
     try {
-      var mngr = cacheManager ?? S3CacheManager();
-      await for (var result in mngr.getFileStream(key.url,
+      var mngr = S3CacheManager();
+      await for (var result in mngr.getS3FileStream(key.url,
           withProgress: true, headers: headers)) {
         if (result is DownloadProgress) {
           chunkEvents.add(ImageChunkEvent(

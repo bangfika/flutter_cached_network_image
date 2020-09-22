@@ -32,7 +32,7 @@ class CachedNetworkImage extends StatelessWidget {
   /// to clear the image from the [ImageCache].
   static Future evictFromCache(
     String url, {
-    BaseCacheManager cacheManager,
+    S3CacheManager cacheManager,
     double scale = 1.0,
   }) async {
     cacheManager = cacheManager ?? S3CacheManager();
@@ -43,7 +43,7 @@ class CachedNetworkImage extends StatelessWidget {
   final CachedNetworkImageProvider _image;
 
   /// Option to use cachemanager with other settings
-  final BaseCacheManager cacheManager;
+  final S3CacheManager cacheManager;
 
   /// The target image that is displayed.
   final String imageUrl;

@@ -1,6 +1,6 @@
+import 'package:cached_network_image/src/cache_manager/s3_cache_manager.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import '_image_provider_io.dart'
     if (dart.library.html) '_image_provider_web.dart' as image_provider;
 
@@ -36,7 +36,7 @@ abstract class CachedNetworkImageProvider
     @Deprecated('ErrorListener is deprecated, use listeners on the imagestream')
         ErrorListener errorListener,
     Map<String, String> headers,
-    BaseCacheManager cacheManager,
+    S3CacheManager cacheManager,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
   }) = image_provider.CachedNetworkImageProvider;
 
@@ -44,7 +44,7 @@ abstract class CachedNetworkImageProvider
   /// will be used.
   ///
   /// When running flutter on the web, the cacheManager is not used.
-  BaseCacheManager get cacheManager;
+  S3CacheManager get cacheManager;
 
   @deprecated
   ErrorListener get errorListener;
