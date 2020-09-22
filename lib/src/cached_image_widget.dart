@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/src/cache_manager/s3_cache_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -34,7 +35,7 @@ class CachedNetworkImage extends StatelessWidget {
     BaseCacheManager cacheManager,
     double scale = 1.0,
   }) async {
-    cacheManager = cacheManager ?? DefaultCacheManager();
+    cacheManager = cacheManager ?? S3CacheManager();
     await cacheManager.removeFile(url);
     return CachedNetworkImageProvider(url, scale: scale).evict();
   }

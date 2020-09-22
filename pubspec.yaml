@@ -7,7 +7,11 @@ version: 2.3.2+1
 dependencies:
   flutter:
     sdk: flutter
-  flutter_cache_manager: ^1.4.1
+  flutter_cache_manager:
+    git:
+      url: git://github.com/Baseflow/flutter_cache_manager
+      path: flutter_cache_manager
+      branch: dev
   octo_image: ^0.3.0
 
 dev_dependencies:
