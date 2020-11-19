@@ -4,7 +4,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
-class S3CacheManager extends BaseCacheManager {
+class S3CacheManager extends CacheManager {
   static const key = 's3_cache_manager';
 
   static S3CacheManager _instance;
@@ -18,9 +18,11 @@ class S3CacheManager extends BaseCacheManager {
 
   S3CacheManager._()
       : super(
-          key,
-          fileService: CustomHttpFileService(),
-          maxAgeCacheObject: Duration(days: 7),
+          Config(
+            key,
+            fileService: CustomHttpFileService(),
+            stalePeriod: Duration(days: 7),
+          ),
         );
 
   Future<String> getFilePath() async {
