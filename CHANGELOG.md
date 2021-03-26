@@ -1,3 +1,18 @@
+## [2.5.0] - 2020-12-22
+* Add support for resizing images in disk cache.
+```dart
+CachedNetworkImage(
+  maxHeightDiskCache: 200,
+  imageUrl: 'https://via.placeholder.com/3000x2000',
+);
+```
+
+## [2.4.1] - 2020-12-01
+* Fix a bug that an image is disposed when it shouldn't.
+
+## [2.4.0] - 2020-11-30
+* Added support for a cache key which is different from the image url.
+
 ## [2.3.3] - 2020-10-16
 * Support for flutter_cache_manager 2.x.x.
 

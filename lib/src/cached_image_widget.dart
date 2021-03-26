@@ -6,25 +6,38 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:octo_image/octo_image.dart';
 
+/// Builder function to create an image widget. The function is called after
+/// the ImageProvider completes the image loading.
 typedef ImageWidgetBuilder = Widget Function(
   BuildContext context,
   ImageProvider imageProvider,
 );
+
+/// Builder function to create a placeholder widget. The function is called
+/// once while the ImageProvider is loading the image.
 typedef PlaceholderWidgetBuilder = Widget Function(
   BuildContext context,
   String url,
 );
+
+/// Builder function to create a progress indicator widget. The function is
+/// called every time a chuck of the image is downloaded from the web, but at
+/// least once during image loading.
 typedef ProgressIndicatorBuilder = Widget Function(
   BuildContext context,
   String url,
   DownloadProgress progress,
 );
+
+/// Builder function to create an error widget. This builder is called when
+/// the image failed loading, for example due to a 404 NotFound exception.
 typedef LoadingErrorWidgetBuilder = Widget Function(
   BuildContext context,
   String url,
   dynamic error,
 );
 
+/// Image widget to show NetworkImage with caching functionality.
 class CachedNetworkImage extends StatelessWidget {
   /// Evict an image from both the disk file based caching system of the
   /// [BaseCacheManager] as the in memory [ImageCache] of the [ImageProvider].
@@ -32,11 +45,12 @@ class CachedNetworkImage extends StatelessWidget {
   /// to clear the image from the [ImageCache].
   static Future evictFromCache(
     String url, {
-    S3CacheManager cacheManager,
+    String cacheKey,
+    BaseCacheManager cacheManager,
     double scale = 1.0,
   }) async {
-    cacheManager = cacheManager ?? S3CacheManager();
-    await cacheManager.removeFile(url);
+    cacheManager = cacheManager ?? DefaultCacheManager();
+    await cacheManager.removeFile(cacheKey ?? url);
     return CachedNetworkImageProvider(url, scale: scale).evict();
   }
 
@@ -47,6 +61,9 @@ class CachedNetworkImage extends StatelessWidget {
 
   /// The target image that is displayed.
   final String imageUrl;
+
+  /// The target image's cache key.
+  final String cacheKey;
 
   /// Optional builder to further customize the display of the image.
   final ImageWidgetBuilder imageBuilder;
@@ -166,11 +183,17 @@ class CachedNetworkImage extends StatelessWidget {
   /// If not given a value, defaults to FilterQuality.low.
   final FilterQuality filterQuality;
 
-  /// Will resize the image in cache to have a certain width using [ResizeImage]
+  /// Will resize the image in memory to have a certain width using [ResizeImage]
   final int memCacheWidth;
 
-  /// Will resize the image in cache to have a certain height using [ResizeImage]
+  /// Will resize the image in memory to have a certain height using [ResizeImage]
   final int memCacheHeight;
+
+  /// Will resize the image and store the resized image in the disk cache.
+  final int maxWidthDiskCache;
+
+  /// Will resize the image and store the resized image in the disk cache.
+  final int maxHeightDiskCache;
 
   /// CachedNetworkImage shows a network image using a caching mechanism. It also
   /// provides support for a placeholder, showing an error and fading into the
@@ -202,6 +225,9 @@ class CachedNetworkImage extends StatelessWidget {
     this.placeholderFadeInDuration,
     this.memCacheWidth,
     this.memCacheHeight,
+    this.cacheKey,
+    this.maxWidthDiskCache,
+    this.maxHeightDiskCache,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
   })  : assert(imageUrl != null),
         assert(fadeOutDuration != null),
@@ -216,7 +242,10 @@ class CachedNetworkImage extends StatelessWidget {
           imageUrl,
           headers: httpHeaders,
           cacheManager: cacheManager,
+          cacheKey: cacheKey,
           imageRenderMethodForWeb: imageRenderMethodForWeb,
+          maxWidth: maxWidthDiskCache,
+          maxHeight: maxHeightDiskCache,
         ),
         super(key: key);
 

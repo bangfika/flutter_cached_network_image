@@ -20,10 +20,13 @@ class CachedNetworkImageProvider
   /// The arguments [url] and [scale] must not be null.
   const CachedNetworkImageProvider(
     this.url, {
+    this.maxHeight,
+    this.maxWidth,
     this.scale = 1.0,
     this.errorListener,
     this.headers,
     this.cacheManager,
+    this.cacheKey,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
   })  : _imageRenderMethodForWeb =
             imageRenderMethodForWeb ?? ImageRenderMethodForWeb.HtmlImage,
@@ -37,6 +40,9 @@ class CachedNetworkImageProvider
   final String url;
 
   @override
+  final String cacheKey;
+
+  @override
   final double scale;
 
   /// Listener to be called when images fails to load.
@@ -45,6 +51,12 @@ class CachedNetworkImageProvider
 
   @override
   final Map<String, String> headers;
+
+  @override
+  final int maxHeight;
+
+  @override
+  final int maxWidth;
 
   final ImageRenderMethodForWeb _imageRenderMethodForWeb;
 
@@ -141,13 +153,16 @@ class CachedNetworkImageProvider
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is CachedNetworkImageProvider &&
-        other.url == url &&
-        other.scale == scale;
+    if (other is CachedNetworkImageProvider) {
+      var sameKey = (cacheKey ?? url) == (other.cacheKey ?? other.url);
+      return sameKey && scale == other.scale;
+    } else {
+      return false;
+    }
   }
 
   @override
-  int get hashCode => ui.hashValues(url, scale);
+  int get hashCode => ui.hashValues(url, scale, cacheKey);
 
   @override
   String toString() => '$runtimeType("$url", scale: $scale)';
