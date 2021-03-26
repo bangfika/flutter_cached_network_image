@@ -99,7 +99,7 @@ class CachedNetworkImageProvider
           'maxHeight will be ignored when a normal CacheManager is used.');
 
       var stream = mngr is ImageCacheManager
-          ? mngr.getImageFile(key.url,
+          ? (mngr as ImageCacheManager).getImageFile(key.url,
               maxHeight: maxHeight,
               maxWidth: maxWidth,
               withProgress: true,
